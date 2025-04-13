@@ -1,0 +1,29 @@
+This project works the following way:
+The secret holds the username and password for the mongodb in encrypted form: root/example
+The configmap holds the database url. This is used by the mongo-express to connect to the mongodb services which in turn connects to the mongodb pod
+There are two deployment files, one for the mongodb and another one for mongo-express service.
+
+
+Steps to deploy the app:
+1. Create a t3.medium node in AWS
+2. Run the following steps to create a k3s cluster
+sudo bash
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server" sh -s - --disable traefik
+exit 
+mkdir .kube
+cd .kube
+sudo cp /etc/rancher/k3s/k3s.yaml ./config
+sudo chown ubuntu:ubuntu config
+chmod 400 config
+export KUBECONFIG=~/.kube/config
+
+kubectl apply -f mongodb-secret.yaml
+kubectl apply -f mongo-configmap.yaml
+kubectl apply -f mongodb-deployment.yaml
+kubectl apply -f mongoexpress-deployment.yaml
+
+The nodeport service makes the mongo-express available via 30010 port. To access mongoexpress UI, go here: http://<public-IP-address-of-ec2-instance>:30010
+
+To log in to mongo express: admin/pass
+
+That's it.
