@@ -9,10 +9,10 @@ spec:
   rules:
   - http:
       paths:
-      - path: /nginx
+      - path: /
         pathType: Prefix
         backend:
           service:
-            name: nginx-service
+            name: nginx
             port:
-              number: 8080
+              number: 80
